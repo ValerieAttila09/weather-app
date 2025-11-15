@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-sky-50 to-white dark:from-slate-900 dark:to-slate-800">
+    <main className="min-h-screen flex items-center justify-center bg-linear-to-b from-sky-50 to-white dark:from-neutral-900 dark:to-neutral-800">
       <LandingHero />
     </main>
   );

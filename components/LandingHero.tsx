@@ -37,7 +37,7 @@ export default function LandingHero() {
           </div>
         </Link>
         <Link href="/docs">
-          <div className="rounded-full border border-gray-200 dark:border-slate-700 px-6 py-3 hover:bg-gray-50 dark:hover:bg-slate-700 transition">
+          <div className="rounded-full border border-gray-200 dark:border-slate-700 px-6 py-3 hover:bg-gray-50 dark:hover:bg-neutral-700 transition">
             Read Docs
           </div>
         </Link>
@@ -56,7 +56,7 @@ export default function LandingHero() {
 
 function CardFeature({ title, desc }: { title: string; desc: string }) {
   return (
-    <div className="p-6 bg-white dark:bg-slate-800 rounded-lg shadow">
+    <div className="p-6 bg-white dark:bg-neutral-800 rounded-lg shadow">
       <h3 className="font-semibold mb-2">{title}</h3>
       <p className="text-sm text-gray-600 dark:text-gray-300">{desc}</p>
     </div>

@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import { useUserStore } from '@/store/userStore';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
-// Settings page also provides a simple email-only login for demo/auth
 
 export default function SettingsPage() {
   const { unit, theme, forecastDays, refreshIntervalMinutes, animationsEnabled, setUnit, setTheme, setForecastDays, setRefreshInterval, setAnimationsEnabled } = useUIStore();
@@ -88,15 +87,15 @@ export default function SettingsPage() {
               <h3 className="text-lg font-medium mb-2">Profile</h3>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm text-slate-700 mb-1">First name</label>
+                  <label className="block text-sm text-neutral-700 mb-1">First name</label>
                   <input value={(session.user as any).firstName || ''} onChange={() => { }} disabled className="px-3 py-2 border rounded w-full" />
                 </div>
                 <div>
-                  <label className="block text-sm text-slate-700 mb-1">Last name</label>
+                  <label className="block text-sm text-neutral-700 mb-1">Last name</label>
                   <input value={(session.user as any).lastName || ''} onChange={() => { }} disabled className="px-3 py-2 border rounded w-full" />
                 </div>
               </div>
-              <p className="text-sm text-slate-500 mt-2">Use the Profile editor below to change your name and email on record.</p>
+              <p className="text-sm text-neutral-500 mt-2">Use the Profile editor below to change your name and email on record.</p>
             </div>
           )}
           <div className="mb-4">
@@ -144,16 +143,16 @@ export default function SettingsPage() {
             <h3 className="text-lg font-medium mb-4">Edit profile</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm text-slate-700 mb-1">First name</label>
+                <label className="block text-sm text-neutral-700 mb-1">First name</label>
                 <input id="pf-first" defaultValue={(session.user as any).firstName || ''} className="px-3 py-2 border rounded w-full" />
               </div>
               <div>
-                <label className="block text-sm text-slate-700 mb-1">Last name</label>
+                <label className="block text-sm text-neutral-700 mb-1">Last name</label>
                 <input id="pf-last" defaultValue={(session.user as any).lastName || ''} className="px-3 py-2 border rounded w-full" />
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-sm text-slate-700 mb-1">Email</label>
+              <label className="block text-sm text-neutral-700 mb-1">Email</label>
               <input id="pf-email" defaultValue={session.user.email || ''} className="px-3 py-2 border rounded w-full" />
             </div>
             <div className="mt-4 flex items-center gap-3">

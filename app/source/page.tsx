@@ -12,7 +12,7 @@ export default function SourcePage() {
         <h1 className="text-4xl font-bold mb-4">Source Code</h1>
         <p className="text-gray-700 mb-6">The code for this project is hosted on GitHub.</p>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded shadow">
+        <div className="bg-white dark:bg-neutral-800 p-6 rounded shadow">
           <h2 className="font-semibold mb-2">Repository</h2>
           <p className="mb-4 text-gray-700">Browse the source, open issues, or contribute on GitHub.</p>
           <Link href="https://github.com/NEO-Glitch-CC/weather-app">

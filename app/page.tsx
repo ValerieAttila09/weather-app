@@ -163,7 +163,7 @@ export default function Home() {
   if (!mounted) return null;
 
   const getBackgroundClass = () => {
-    if (!currentWeather) return { class: 'bg-slate-50', image: null };
+    if (!currentWeather) return { class: 'bg-neutral-50', image: null };
     const icon = currentWeather.icon || '';
     if (icon.includes('sun')) return { class: '', image: '/backgrounds/sun.svg' };
     if (icon.includes('rain') || icon.includes('cloud-rain'))

@@ -10,7 +10,7 @@ export default function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="w-full border-b bg-white/60 dark:bg-slate-900/60 backdrop-blur sticky top-0 z-40">
+    <header className="w-full border-b bg-white/60 dark:bg-neutral-900/60 backdrop-blur sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
         <motion.div
           initial={{ x: -20, opacity: 0 }}
@@ -41,7 +41,7 @@ export default function Header() {
                   try {
                     useUserStore.getState().logout();
                   } catch (e) {
-                    // ignore
+                    console.error(e);
                   }
                   signOut({ callbackUrl: '/landing' });
                 }}
@@ -51,7 +51,7 @@ export default function Header() {
             </motion.div>
           ) : (
             <div className="flex items-center gap-2">
-              <Button size="sm" onClick={() => signIn()}>
+              <Button variant={'outline'} size="sm" onClick={() => signIn()}>
                 Sign in
               </Button>
             </div>

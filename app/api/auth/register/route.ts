@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+import { signResetToken } from '@/lib/jwt';
+import { sendVerificationEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -47,9 +49,16 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Generate verification token and send email
+    const verificationToken = signResetToken({ id: user.id, email: user.email }, '24h');
+    const verifyLink = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/verify?token=${verificationToken}`;
+
+    // Send verification email (test mode logs if EMAIL_SERVER not set)
+    await sendVerificationEmail(email, verifyLink, firstName);
+
     return NextResponse.json(
       {
-        message: 'User created successfully',
+        message: 'User created successfully. Check your email to verify your account.',
         user: {
           id: user.id,
           email: user.email,

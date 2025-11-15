@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
     const { email, firstName, lastName } = body;
     if (!email) return NextResponse.json({ error: 'email required' }, { status: 400 });
 
-    // find or create user
     const user = await prisma.user.upsert({
       where: { email },
       update: { firstName: firstName || undefined, lastName: lastName || undefined },

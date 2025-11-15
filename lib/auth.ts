@@ -7,9 +7,15 @@ export function signToken(payload: object, expiresInSeconds = DEFAULT_EXPIRES_SE
   return jwt.sign(payload, JWT_SECRET, { expiresIn: expiresInSeconds });
 }
 
-export function verifyToken(token: string) {
+interface TokenPayload {
+  id: string;
+  iat?: number;
+  exp?: number;
+}
+
+export function verifyToken(token: string): TokenPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as any;
+    return jwt.verify(token, JWT_SECRET) as TokenPayload;
   } catch (err) {
     return null;
   }

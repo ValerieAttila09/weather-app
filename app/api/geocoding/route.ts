@@ -16,18 +16,22 @@ export async function GET(request: NextRequest) {
 
     const geoData = await getGeocoding(query, Math.min(limit, 50));
 
-    const results = geoData.results?.map((result) => ({
-      id: result.id,
-      name: result.name,
-      latitude: result.latitude,
-      longitude: result.longitude,
-      country: result.country || result.country_code,
-      admin1: result.admin1,
-    })) || [];
+    const results = geoData.results
+      ? geoData.results.map((result) => ({
+        id: result.id,
+        name: result.name,
+        latitude: result.latitude,
+        longitude: result.longitude,
+        country: result.country || result.country_code,
+        admin1: result.admin1,
+      }))
+      : [];
 
     return NextResponse.json({ results });
   } catch (error) {
-    console.error('Geocoding API error:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('Geocoding API error:', errorMessage);
     return NextResponse.json(
       { error: 'Failed to fetch geocoding data' },
       { status: 500 }

@@ -4,6 +4,7 @@ import GitHubProvider from 'next-auth/providers/github';
 import EmailProvider from 'next-auth/providers/email';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -20,28 +21,52 @@ export const authOptions = {
       from: process.env.EMAIL_FROM,
     }),
 
-    // Fallback credentials provider for quick email-based sign-in UI
+    // Credentials provider for email/password login
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         const email = credentials?.email;
-        if (!email) return null;
-        // upsert user in prisma
-        const user = await prisma.user.upsert({
+        const password = credentials?.password;
+
+        if (!email || !password) {
+          throw new Error('Email and password are required');
+        }
+
+        // Find user by email
+        const user = await prisma.user.findUnique({
           where: { email },
-          update: {},
-          create: { email, firstName: '', lastName: '', password: null },
         });
-        return { id: user.id, name: `${user.firstName} ${user.lastName}`.trim(), email: user.email } as any;
+
+        if (!user || !user.password) {
+          throw new Error('Invalid email or password');
+        }
+
+        // Compare password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+          throw new Error('Invalid email or password');
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+        } as any;
       },
     }),
   ],
   callbacks: {
     async session({ session, user }: any) {
-      if (session.user) session.user.id = user.id;
+      if (session.user) {
+        session.user.id = user.id;
+        session.user.firstName = user.firstName;
+        session.user.lastName = user.lastName;
+      }
       return session;
     },
   },

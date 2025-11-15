@@ -82,6 +82,23 @@ export default function SettingsPage() {
               </div>
             )}
           </div>
+          {/* Profile edit area */}
+          {session?.user && (
+            <div className="mb-4">
+              <h3 className="text-lg font-medium mb-2">Profile</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm text-slate-700 mb-1">First name</label>
+                  <input value={(session.user as any).firstName || ''} onChange={() => { }} disabled className="px-3 py-2 border rounded w-full" />
+                </div>
+                <div>
+                  <label className="block text-sm text-slate-700 mb-1">Last name</label>
+                  <input value={(session.user as any).lastName || ''} onChange={() => { }} disabled className="px-3 py-2 border rounded w-full" />
+                </div>
+              </div>
+              <p className="text-sm text-slate-500 mt-2">Use the Profile editor below to change your name and email on record.</p>
+            </div>
+          )}
           <div className="mb-4">
             <label className="block text-sm font-medium mb-1">Unit</label>
             <select value={localUnit} onChange={(e) => setLocalUnit(e.target.value as 'c' | 'f')} className="px-3 py-2 border rounded">
@@ -121,6 +138,46 @@ export default function SettingsPage() {
             <Button onClick={apply}>Apply</Button>
           </div>
         </Card>
+        {/* Profile form that edits via API */}
+        {session?.user && (
+          <Card className="p-6">
+            <h3 className="text-lg font-medium mb-4">Edit profile</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm text-slate-700 mb-1">First name</label>
+                <input id="pf-first" defaultValue={(session.user as any).firstName || ''} className="px-3 py-2 border rounded w-full" />
+              </div>
+              <div>
+                <label className="block text-sm text-slate-700 mb-1">Last name</label>
+                <input id="pf-last" defaultValue={(session.user as any).lastName || ''} className="px-3 py-2 border rounded w-full" />
+              </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm text-slate-700 mb-1">Email</label>
+              <input id="pf-email" defaultValue={session.user.email || ''} className="px-3 py-2 border rounded w-full" />
+            </div>
+            <div className="mt-4 flex items-center gap-3">
+              <Button onClick={async () => {
+                const firstName = (document.getElementById('pf-first') as HTMLInputElement).value;
+                const lastName = (document.getElementById('pf-last') as HTMLInputElement).value;
+                const emailVal = (document.getElementById('pf-email') as HTMLInputElement).value;
+                try {
+                  const res = await fetch('/api/user/update', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ firstName, lastName, email: emailVal }),
+                  });
+                  const data = await res.json();
+                  if (!res.ok) throw new Error(data.error || 'Failed');
+                  alert('Profile updated');
+                  location.reload();
+                } catch (err: any) {
+                  alert(err.message || 'Error');
+                }
+              }}>Save profile</Button>
+            </div>
+          </Card>
+        )}
       </div>
     </main>
   );

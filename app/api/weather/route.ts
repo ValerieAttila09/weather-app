@@ -27,9 +27,12 @@ export async function GET(request: NextRequest) {
 
     // Get reverse geocoding for city/country
     const geoData = await reverseGeocoding(latitude, longitude);
-    const location = geoData.results?.[0];
-    const city = location?.name || 'Unknown';
-    const country = location?.country || 'Unknown';
+    const location =
+      geoData.results && geoData.results.length > 0
+        ? geoData.results[0]
+        : null;
+    const city = location?.name ?? 'Unknown';
+    const country = location?.country ?? 'Unknown';
 
     // Prepare weather response
     const current = weatherData.current;
@@ -37,15 +40,20 @@ export async function GET(request: NextRequest) {
 
     // determine current UV index if available
     let uvIndex: number | null = null;
-    if (weatherData.hourly && weatherData.hourly.time && weatherData.hourly.uv_index) {
+    if (
+      weatherData.hourly &&
+      Array.isArray(weatherData.hourly.time) &&
+      Array.isArray(weatherData.hourly.uv_index)
+    ) {
       const now = new Date();
-      // Find nearest hourly index by matching date string prefix
-      const idx = weatherData.hourly.time.findIndex((t) => t.startsWith(now.toISOString().slice(0, 13)));
-      if (idx === -1) {
-        // fallback to first index
+      const isoPrefix = now.toISOString().slice(0, 13);
+      const idx = weatherData.hourly.time.findIndex((t) =>
+        t.startsWith(isoPrefix)
+      );
+      if (idx !== -1 && weatherData.hourly.uv_index[idx] !== undefined) {
+        uvIndex = weatherData.hourly.uv_index[idx];
+      } else if (weatherData.hourly.uv_index.length > 0) {
         uvIndex = weatherData.hourly.uv_index[0] ?? null;
-      } else {
-        uvIndex = weatherData.hourly.uv_index[idx] ?? null;
       }
     }
 
@@ -97,14 +105,18 @@ export async function GET(request: NextRequest) {
           },
         });
       } catch (dbError) {
-        console.error('Error saving weather to database:', dbError);
+        const dbErrorMsg =
+          dbError instanceof Error ? dbError.message : 'Unknown database error';
+        console.error('Error saving weather to database:', dbErrorMsg);
         // Don't fail the response if database save fails
       }
     }
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Weather API error:', error);
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('Weather API error:', errorMessage);
     return NextResponse.json(
       { error: 'Failed to fetch weather data' },
       { status: 500 }

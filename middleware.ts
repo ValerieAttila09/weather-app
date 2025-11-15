@@ -1,18 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // Routes yang tidak memerlukan authentikasi
-  const publicRoutes = ['/', '/api/weather', '/api/geocoding'];
+  // Routes yang boleh diakses tanpa auth
+  const publicRoutes = [
+    '/landing',
+    '/docs',
+    '/about',
+    '/source',
+    '/auth/login',
+    '/auth/register',
+    '/api/auth',
+    '/api/weather',
+    '/api/geocoding',
+  ];
 
-  // Jika mengakses public routes, lanjutkan
-  if (publicRoutes.some((route) => pathname.startsWith(route))) {
+  // Cek apakah route public
+  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
+  if (isPublicRoute) {
     return NextResponse.next();
   }
 
-  // Untuk routes yang memerlukan auth, bisa ditambahkan logika authentikasi
-  // Contoh: cek token dari cookies atau headers
+  // Untuk "/" (weather app) dan "/settings", cek session
+  if (pathname === '/' || pathname.startsWith('/settings')) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET,
+    });
+
+    if (!token) {
+      // Redirect ke login jika tidak authenticated
+      return NextResponse.redirect(new URL('/auth/login', request.url));
+    }
+  }
+
   return NextResponse.next();
 }
 

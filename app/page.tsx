@@ -213,7 +213,7 @@ export default function Home() {
           </p>
           <div className="mt-3 flex items-center justify-center gap-4">
             <Link href="/settings">
-              <a className="text-sm text-blue-600 underline">Settings</a>
+              <div className="text-sm text-blue-600 underline">Settings</div>
             </Link>
             {session?.user ? (
               <div className="flex items-center gap-2">

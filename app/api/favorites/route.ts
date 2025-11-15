@@ -27,8 +27,13 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(favorites);
   } catch (error) {
-    console.error('Favorites GET error:', error);
-    return NextResponse.json({ error: 'Failed to fetch favorites' }, { status: 500 });
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('Favorites GET error:', errorMessage);
+    return NextResponse.json(
+      { error: 'Failed to fetch favorites' },
+      { status: 500 }
+    );
   }
 }
 
@@ -43,10 +48,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'city, latitude, longitude required' }, { status: 400 });
     }
 
-    const uid = String(userId);
     const fav = await prisma.favorite.create({
       data: {
-        userId: uid,
+        userId: userId,
         city,
         country: country || undefined,
         latitude: Number(latitude),
@@ -56,8 +60,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(fav);
   } catch (error) {
-    console.error('Favorites POST error:', error);
-    return NextResponse.json({ error: 'Failed to create favorite' }, { status: 500 });
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('Favorites POST error:', errorMessage);
+    return NextResponse.json(
+      { error: 'Failed to create favorite' },
+      { status: 500 }
+    );
   }
 }
 
@@ -76,7 +85,12 @@ export async function DELETE(request: NextRequest) {
     await prisma.favorite.delete({ where: { id } });
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('Favorites DELETE error:', error);
-    return NextResponse.json({ error: 'Failed to delete favorite' }, { status: 500 });
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+    console.error('Favorites DELETE error:', errorMessage);
+    return NextResponse.json(
+      { error: 'Failed to delete favorite' },
+      { status: 500 }
+    );
   }
 }

@@ -61,13 +61,11 @@ export function Forecast({ forecast }: ForecastProps) {
       >
         {forecast.slice(0, Math.max(1, Math.min(forecastDays, forecast.length))).map((day, idx) => {
           const date = new Date(day.date);
-          const dayName = date.toLocaleDateString('en-US', {
-            weekday: 'short',
-          });
-          const dayDate = date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-          });
+          // Format consistently without toLocaleDateString to avoid hydration mismatch
+          const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const dayName = days[date.getUTCDay()];
+          const dayDate = `${months[date.getUTCMonth()]} ${date.getUTCDate()}`;
 
           return (
             <motion.div

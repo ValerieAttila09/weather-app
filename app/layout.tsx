@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
 import AuthProvider from '@/components/AuthProvider';
+import Header from '@/components/Header';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,7 +32,8 @@ export default function RootLayout({
         <ThemeProvider attribute="class" enableSystem={true} defaultTheme="system">
           <AuthProvider>
             <div className="fixed inset-0 bg-grid-pattern opacity-5 pointer-events-none"></div>
-            {children}
+            <Header />
+            <div className="pt-16">{children}</div>
           </AuthProvider>
         </ThemeProvider>
       </body>
